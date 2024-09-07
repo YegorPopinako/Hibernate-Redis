@@ -1,6 +1,10 @@
 package ua.java.repository;
 
+import java.util.List;
+
 public interface CrudRepository<T, I> {
+
+    List<T> getAll();
 
     T getById(I id);
 
@@ -12,5 +16,5 @@ public interface CrudRepository<T, I> {
 
     void update(T entity);
 
-    void updateById(I id, T entity);
+    List<T> getItems(int offset, int limit);
 }

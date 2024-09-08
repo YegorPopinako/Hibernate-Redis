@@ -1,6 +1,8 @@
 package ua.java.service;
 
 import jakarta.persistence.EntityNotFoundException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import ua.java.domain.entity.Country;
 import ua.java.domain.exception.DatabaseOperationException;
 import ua.java.repository.CountryRepository;
@@ -12,6 +14,7 @@ import static java.util.Objects.isNull;
 
 public class CountryService {
 
+    private static final Logger logger = LoggerFactory.getLogger(CityService.class);
     private final CountryRepository repository;
 
     public CountryService(CountryRepository repository) {
@@ -24,11 +27,13 @@ public class CountryService {
 
     public Country getById(Integer id) {
         if (isNull(id) || id <= 0) {
+            logger.error("Invalid id provided: {}", id);
             throw new IllegalArgumentException("Id cannot be null or less than or equal to 0");
         }
         try {
             return repository.getById(id);
         } catch (Exception e) {
+            logger.error("Country with id {} not found", id);
             throw new EntityNotFoundException("Country with id " + id + " not found");
         }
     }
@@ -42,14 +47,17 @@ public class CountryService {
 
     public void deleteById(Integer id) {
         if (isNull(id) || id <= 0) {
+            logger.error("Invalid id provided: {}", id);
             throw new IllegalArgumentException("Id cannot be null or less than or equal to 0");
         }
         try {
             repository.getById(id);
         } catch (Exception e) {
+            logger.error("Country with id {} not found", id);
             throw new EntityNotFoundException("Country with id " + id + " not found");
         }
         repository.deleteById(id);
+        logger.info("Successfully deleted city with id {}", id);
     }
 
     public void delete(Country entity) {
@@ -58,6 +66,7 @@ public class CountryService {
         }
         try {
             repository.delete(entity);
+            logger.info("Successfully deleted city");
         } catch (Exception e) {
             throw new DatabaseOperationException("Error deleting Country");
         }
@@ -69,6 +78,7 @@ public class CountryService {
         }
         try {
             repository.update(entity);
+            logger.info("Successfully updated Country entity");
         } catch (Exception e) {
             throw new DatabaseOperationException("Error updating Country");
         }
@@ -76,6 +86,7 @@ public class CountryService {
 
     public void updateById(Integer id, Country entity) {
         if (isNull(id) || id <= 0 || entity == null) {
+            logger.error("Invalid id or city entity provided: {}, {}", id, entity);
             throw new IllegalArgumentException("Invalid id or Country entity");
         }
         Country existingCountry;
@@ -102,6 +113,7 @@ public class CountryService {
         existingCountry.setCapital(entity.getCapital());
         existingCountry.setLanguages(entity.getLanguages());
         repository.update(existingCountry);
+        logger.info("Successfully updated city with id {}", id);
     }
 
     public List<Country> getItems(int offset, int limit) {

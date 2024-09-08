@@ -2,12 +2,15 @@ package ua.java.repository;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import ua.java.domain.entity.City;
 
 import java.util.List;
 
 public class CityRepository implements CrudRepository<City, Integer> {
 
+    Logger logger = LoggerFactory.getLogger(CityRepository.class);
     private final SessionFactory sessionFactory;
 
     public CityRepository(SessionFactory sessionFactory) {
@@ -42,6 +45,7 @@ public class CityRepository implements CrudRepository<City, Integer> {
             session.beginTransaction();
             session.persist(entity);
             session.getTransaction().commit();
+            logger.info("City entity saved");
             return entity;
         }
     }

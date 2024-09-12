@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 public class DataTransformer {
 
     public static CityCountry transformDataToJson(City city) {
+
         CityCountry res = new CityCountry();
         res.setId(city.getId());
         res.setName(city.getName());

@@ -3,11 +3,16 @@ package ua.java.service;
 import jakarta.persistence.EntityNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ua.java.cache.RedisRepository;
 import ua.java.domain.entity.City;
 import ua.java.domain.exception.DatabaseOperationException;
+import ua.java.redis.CityCountry;
+import ua.java.redis.DataTransformer;
 import ua.java.repository.CityRepository;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static java.util.Objects.isNull;
 
@@ -15,9 +20,14 @@ public class CityService {
 
     private static final Logger logger = LoggerFactory.getLogger(CityService.class);
     private final CityRepository repository;
+    private final RedisRepository redisRepository;
+    private final Map<Integer, Integer> requestCountMap = new HashMap<>();
+    private final Map<Integer, String> requestNameMap = new HashMap<>();
+    private final int CACHE_THRESHOLD = 2;
 
-    public CityService(CityRepository repository) {
+    public CityService(CityRepository repository, RedisRepository redisRepository) {
         this.repository = repository;
+        this.redisRepository = redisRepository;
     }
 
     public List<City> getAll() {
@@ -29,12 +39,31 @@ public class CityService {
             logger.error("Invalid id provided: {}", id);
             throw new IllegalArgumentException("Id cannot be null or less than or equal to 0");
         }
+
+        if (requestCountMap.containsKey(id) && requestCountMap.get(id) >= CACHE_THRESHOLD) {
+            logger.info("Returning City info with id {} from Redis cache", id);
+            CityCountry cityCountry = redisRepository.getDataByName(requestNameMap.get(id));
+            return DataTransformer.fromJsonToCityEntity(cityCountry);
+        }
+
+        requestCountMap.put(id, requestCountMap.getOrDefault(id, 0) + 1);
+
+        City city;
         try {
-            return repository.getById(id);
+            city = repository.getById(id);
         } catch (Exception e) {
             logger.error("City with id {} not found", id);
             throw new EntityNotFoundException("City with id " + id + " not found");
         }
+
+        if (requestCountMap.get(id) >= CACHE_THRESHOLD) {
+            requestNameMap.put(id, city.getName());
+            CityCountry cityCountry = DataTransformer.transformDataToJson(city);
+            redisRepository.cacheData(cityCountry);
+            logger.info("Frequent City and Country data with id {} cached in Redis", id);
+        }
+
+        return city;
     }
 
     public City save(City entity) {

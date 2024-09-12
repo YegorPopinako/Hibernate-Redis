@@ -4,6 +4,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ua.java.domain.entity.City;
 import ua.java.domain.entity.Country;
 
 import java.util.List;
@@ -91,6 +92,18 @@ public class CountryRepository implements CrudRepository<Country, Integer> {
             return result;
         }
     }
+
+    public City getCityByCountryId(Integer countryId) {
+        try (Session session = sessionFactory.getCurrentSession()) {
+            session.beginTransaction();
+            Country country = session.createQuery("select c from Country c left join fetch c.capital where c.id = :countryId", Country.class)
+                    .setParameter("countryId", countryId)
+                    .getSingleResult();
+            session.getTransaction().commit();
+            return country.getCapital();
+        }
+    }
+
 
     public int getCount() {
         try(Session session = sessionFactory.getCurrentSession()) {

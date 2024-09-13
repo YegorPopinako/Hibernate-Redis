@@ -18,7 +18,6 @@ import java.util.Map;
 import static java.util.Objects.isNull;
 
 public class CountryService {
-
     private static final Logger logger = LoggerFactory.getLogger(CountryService.class);
     private final CountryRepository repository;
     private final RedisRepository redisRepository;
@@ -143,7 +142,7 @@ public class CountryService {
         existingCountry.setCapital(entity.getCapital());
         existingCountry.setLanguages(entity.getLanguages());
         repository.update(existingCountry);
-        logger.info("Successfully updated city with id {}", id);
+        logger.info("Successfully updated country with id {}", id);
     }
 
     public List<Country> getItems(int offset, int limit) {
@@ -155,5 +154,13 @@ public class CountryService {
 
     public int getCount() {
         return repository.getCount();
+    }
+
+    public Map<Integer, Integer> getRequestCountMap() {
+        return requestCountMap;
+    }
+
+    public Map<Integer, String> getRequestNameMap() {
+        return requestNameMap;
     }
 }

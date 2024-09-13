@@ -37,13 +37,4 @@ public class RedisRepository {
             throw new RuntimeException("Could not serialize city");
         }
     }
-
-    public void removeCity(Integer id) {
-        String cityKey = "city:" + id;
-        redisClient.del(cityKey);
-    }
-
-    public void close() {
-        redisClient.close();
-    }
 }

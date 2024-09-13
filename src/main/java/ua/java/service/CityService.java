@@ -143,4 +143,12 @@ public class CityService {
     public int getCount() {
         return repository.getCount();
     }
+
+    public Map<Integer, Integer> getRequestCountMap() {
+        return requestCountMap;
+    }
+
+    public Map<Integer, String> getRequestNameMap() {
+        return requestNameMap;
+    }
 }

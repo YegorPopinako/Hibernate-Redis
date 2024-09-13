@@ -20,7 +20,7 @@ import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
-public class CountryServiceTest {
+class CountryServiceTest {
 
     @Mock
     private CountryRepository repository;
@@ -117,7 +117,7 @@ public class CountryServiceTest {
     }
 
     @Test
-    public void testSaveCountry() {
+    void testSaveCountry() {
         Country country = new Country();
         country.setId(1);
         country.setName("TestCountry");
@@ -133,7 +133,7 @@ public class CountryServiceTest {
     }
 
     @Test
-    public void testSaveNullCountry() {
+    void testSaveNullCountry() {
 
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> countryService.save(null));
 
@@ -141,7 +141,7 @@ public class CountryServiceTest {
     }
 
     @Test
-    public void testDeleteById() {
+    void testDeleteById() {
         Integer id = 1;
 
         when(repository.getById(id)).thenReturn(new Country());
@@ -164,7 +164,7 @@ public class CountryServiceTest {
     }
 
     @Test
-    public void testDeleteEntity() {
+    void testDeleteEntity() {
         Country country = new Country();
         country.setId(1);
 
@@ -176,7 +176,7 @@ public class CountryServiceTest {
     }
 
     @Test
-    public void testDeleteWithException() {
+    void testDeleteWithException() {
         Country country = new Country();
         country.setId(1);
 
@@ -188,7 +188,7 @@ public class CountryServiceTest {
     }
 
     @Test
-    public void testUpdateEntity() {
+    void testUpdateEntity() {
         Country country = new Country();
         country.setId(1);
 
@@ -200,7 +200,7 @@ public class CountryServiceTest {
     }
 
     @Test
-    public void testUpdateWithException() {
+    void testUpdateWithException() {
         Country country = new Country();
         country.setId(1);
 
@@ -213,7 +213,7 @@ public class CountryServiceTest {
     }
 
     @Test
-    public void testUpdateById() {
+    void testUpdateById() {
         Integer id = 1;
         Country existingCountry = new Country();
         existingCountry.setId(id);
@@ -232,7 +232,7 @@ public class CountryServiceTest {
     }
 
     @Test
-    public void testUpdateByInvalidId() {
+    void testUpdateByInvalidId() {
         Integer id = 0;
         Country updatedCountry = new Country();
         updatedCountry.setCode("NEW_CODE");
@@ -246,7 +246,7 @@ public class CountryServiceTest {
     }
 
     @Test
-    public void testUpdateWithNullEntity() {
+    void testUpdateWithNullEntity() {
         Integer id = 1;
 
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> countryService.updateById(id, null));
@@ -258,7 +258,7 @@ public class CountryServiceTest {
     }
 
     @Test
-    public void testUpdateNonExistingEntity() {
+    void testUpdateNonExistingEntity() {
         Integer id = 1;
         Country updatedCountry = new Country();
         updatedCountry.setCode("NEW_CODE");
@@ -273,7 +273,7 @@ public class CountryServiceTest {
     }
 
     @Test
-    public void testGetItemsWithValidParameters() {
+    void testGetItemsWithValidParameters() {
         int offset = 0;
         int limit = 10;
         List<Country> countries = Arrays.asList(new Country(), new Country());
@@ -288,7 +288,7 @@ public class CountryServiceTest {
     }
 
     @Test
-    public void testGetItemsWithInvalidParameters() {
+    void testGetItemsWithInvalidParameters() {
         int offset = -1;
         int limit = 0;
 
@@ -301,7 +301,7 @@ public class CountryServiceTest {
 
 
     @Test
-    public void testGetCount() {
+    void testGetCount() {
         int count = 5;
 
         when(repository.getCount()).thenReturn(count);
